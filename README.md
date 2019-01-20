@@ -15,7 +15,7 @@ We mainly followed our initial idea in building this app in Milestone 2. However
 
 # Functionality
 
-This app is deployed [here](https://gilbertlei.shinyapps.io/dsci_532_mental_health_analyzer/). It can be accessed through any mainstream browsers on either PCs, cell phones or tablets. The app contains a landing page that has a sidebar on the left side and a main panel on the right side. There are four filters on the sidebar.  Users can filter the data by specifying country, gender, age group and/or company size. On the main panel, there are in total six bar charts. Each bar chart shows an analysis in one specific area related to employees' attitudes towards mental health issues in the workplace. Below are four screenshots which illustrate how to use each of the four filters on the sidebar.
+This app has been deployed [here](https://gilbertlei.shinyapps.io/dsci_532_mental_health_analyzer/). It can be accessed through any mainstream browsers on either PCs, cell phones or tablets. The app contains a landing page that has a sidebar on the left side and a main panel on the right side. There are four filters on the sidebar.  Users can filter the data by specifying country, gender, age group and/or company size. On the main panel, there are in total six bar charts. Each bar chart shows an analysis in one specific area related to employees' attitudes towards mental health issues in the workplace. Below are four screenshots which illustrate how to use each of the four filters on the sidebar.
 
 <img src="imgs/select-country.jpg" alt="Select country" style="width:282px;height:308px;"> 
 
