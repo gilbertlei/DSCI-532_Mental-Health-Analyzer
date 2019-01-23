@@ -1,43 +1,36 @@
 library(shiny)
 library(tidyverse)
 library(ggplot2)
-library(gridExtra)
 
-data <- read.csv("data/cleaned_survey_data.csv", stringsAsFactors = FALSE)
+data <- read.csv("data/cleaned_survey_data.csv", header=TRUE, stringsAsFactors = FALSE)
 
 ui <- fluidPage(
   titlePanel("Mental Health in Tech Analyzer",
              windowTitle = "Mental Health in Tech Analyzer"),
   sidebarLayout(
      sidebarPanel(
+       selectInput("questionInput", "Select a question", 
+                   choices = c("1. Do you think that discussing a mental health issue with your employer would have negative consequences?"="mental_health_consequence",
+                               "2. Would you be willing to discuss a mental health issue with your coworkers?"="coworkers",
+                               "3. Would you be willing to discuss a mental health issue with your direct supervisor(s)?"="supervisor",
+                               "4. Would you bring up a mental health issue with a potential employer in an interview?"="mental_health_interview",
+                               "5. Do you know the options for mental health care your employer provides?"="care_options",
+                               "6. Has your employer ever discussed mental health as part of an employee wellness program?"="wellness_program"), 
+                   selected = "mental_health_consequence"),
        selectInput("countryInput", "Select country", 
-                   choices = c("All", "Australia", "Canada", 
-                               "France", "Germany", "Ireland", 
-                               "Netherlands", "United Kingdom", "United States"), 
+                   choices = c("All", "United States", "Others"), 
                    selected = "All"),
        radioButtons("genderInput", "Select Gender",
                     choices = c("All", "Male", "Female"), 
                     selected = "All"), 
        selectInput("ageInput", "Select age group", 
                    choices = c("All" = 1, 
-                                  "< 30" = 2, 
-                                  "30~40" = 3, 
-                                  "40~50" = 4, 
-                                  ">50" = 5), 
-                   selected = 1), 
-       selectInput("companyInput", "Select company size", 
-                   choices = c("All", "Less than 100", "100-500", "500-1000", "More than 1000"), 
+                                  "<= 35" = 2, 
+                                  ">35" = 3), 
                    selected = 1)
      ),
      mainPanel(
-       fluidRow(column(6, plotOutput('plot1')),
-                column(6, plotOutput('plot2'))),
-       fluidRow(column(6, plotOutput('plot3')),
-                column(6, plotOutput('plot4'))),
-       fluidRow(column(6, plotOutput('plot5')),
-                column(6, plotOutput('plot6')))
-       # plotOutput('plotgraph'),
-       # plotOutput('plot6')
+       plotOutput('myplot')
      )
    )
 )
@@ -45,16 +38,22 @@ ui <- fluidPage(
 server <- function(input, output) {
   
   dataFilter <- reactive({
-    # first layer of filter 
+
+    # select what is going to be analyzed based on 'questionInput' 
+    filteredData <- data %>%
+        select(Country, Gender, Age, input$questionInput)
+    
     # filter data based on 'countryInput', which represents selected country 
     if(input$countryInput == 'All') {
-      filteredData <- data
-    } else {
-      filteredData <- data %>%
-        filter(Country == input$countryInput)
+      filteredData <- filteredData
+    } else if(input$countryInput == 'United States') { 
+      filteredData <- filteredData %>%
+        filter(Country == 'United States')
+    } else if(input$countryInput == 'Others') { 
+      filteredData <- filteredData %>%
+        filter(Country != 'United States')
     }
     
-    # second layer of filter 
     # filter data based on 'genderInput', which represents selected gender
     if(input$genderInput == 'All') {
       filteredData <- filteredData
@@ -63,94 +62,45 @@ server <- function(input, output) {
         filter(Gender == input$genderInput)
     }
     
-    # third layer of filter 
     # filter data based on 'ageInput', which represents selected age group
     if(input$ageInput == '1') { 
       filteredData <- filteredData
     } else {
       if(input$ageInput == '2') {
         filteredData <- filteredData %>% 
-          filter(Age <= 30)
+          filter(Age <= 35)
       } else {
-        if(input$ageInput == '3') {
-          filteredData <- filteredData %>% 
-            filter(Age > 30, Age <= 40)
-        } else {
-          if(input$ageInput == '4') {
             filteredData <- filteredData %>% 
-              filter(Age > 40, Age <= 50)
-          } else {
-            filteredData <- filteredData %>% 
-              filter(Age > 50)
-          }
+              filter(Age > 35)
         }
-      }
     }
     
-    # last layer of filter 
-    # filter data based on 'companyInput', which represents selected company size 
-    if(input$companyInput == 'All') { 
-      filteredData <- filteredData
-    } else {
-      filteredData <- filteredData %>%
-        filter(no_employees == input$companyInput)
+  })
+
+  # plot the bar chart based on filtered data
+  output$myplot <- renderPlot({
+    
+    # initiate plot title text 
+    if(input$questionInput == 'mental_health_consequence') {
+      myTitle = 'Do you think that discussing a mental \nhealth issue with your employer would \nhave negative consequences?'
+    } else if(input$questionInput == 'coworkers') {
+      myTitle = 'Would you be willing to discuss a mental \nhealth issue with your coworkers?'
+    } else if(input$questionInput == 'supervisor') {
+      myTitle = 'Would you be willing to discuss a mental \nhealth issue with your direct supervisor(s)?'
+    } else if(input$questionInput == 'mental_health_interview') {
+      myTitle = 'Would you bring up a mental health issue \nwith a potential employer in an interview?'
+    } else if(input$questionInput == 'care_options') {
+      myTitle = 'Do you know the options for mental health \ncare your employer provides?'
+    } else if(input$questionInput == 'wellness_program') {
+      myTitle = 'Has your employer ever discussed mental \nhealth as part of an employee wellness program?'
     }
-  })
-
-  # plot the first bar chart based on variable 'mental_health_consequence'
-  output$plot1 <- renderPlot({
+    
     dataFilter() %>% 
-      ggplot(aes(mental_health_consequence, fill=mental_health_consequence)) + 
-      geom_bar() + 
-      ggtitle('Do you think that discussing a mental \nhealth issue with your employer would \nhave negative consequences?') + 
-      theme(legend.position="none")
+      ggplot(aes(x=!!sym(input$questionInput), fill=!!sym(input$questionInput))) + 
+      geom_bar() +
+      theme(legend.position="none") + 
+      labs(x=input$questionInput, y='count', title=myTitle)
   })
-  
-  # plot the second bar chart based on variable 'coworkers' 
-  output$plot2 <- renderPlot({
-    dataFilter() %>% 
-      ggplot(aes(coworkers, fill=coworkers)) + 
-      geom_bar() + 
-      ggtitle('Would you be willing to discuss a mental \nhealth issue with your coworkers?') + 
-      theme(legend.position="none")
-  })
-
-  # plot the third bar chart based on variable 'supervisor' 
-  output$plot3 <- renderPlot({
-    dataFilter() %>% 
-      ggplot(aes(supervisor, fill=supervisor)) + 
-      geom_bar() + 
-      ggtitle('Would you be willing to discuss a mental \nhealth issue with your direct supervisor(s)?') + 
-      theme(legend.position="none")
-  })
-  
-  # plot the fourth bar chart based on variable 'mental_health_interview' 
-  output$plot4 <- renderPlot({
-    dataFilter() %>% 
-      ggplot(aes(mental_health_interview, fill=mental_health_interview)) + 
-      geom_bar() + 
-      ggtitle('Would you bring up a mental health issue \nwith a potential employer in an interview?') + 
-      theme(legend.position="none")
-  })
-  
-  # plot the fifth bar chart based on variable 'care_options' 
-  output$plot5 <- renderPlot({
-    dataFilter() %>% 
-      ggplot(aes(care_options, fill=care_options)) + 
-      geom_bar() + 
-      ggtitle('Do you know the options for mental health \ncare your employer provides?') + 
-      theme(legend.position="none")
-  })
-  
-  # plot the sixth bar chart based on variable 'wellness_program' 
-  output$plot6 <- renderPlot({
-    dataFilter() %>% 
-      ggplot(aes(wellness_program, fill=wellness_program)) + 
-      geom_bar() + 
-      ggtitle('Has your employer ever discussed mental \nhealth as part of an employee wellness program?') + 
-      theme(legend.position="none")
-  })
-  
 }
 
 shinyApp(ui = ui, server = server)
