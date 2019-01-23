@@ -18,12 +18,12 @@ selected_feat <- c("Country", "Gender", "Age", "no_employees", "mental_health_co
 # only consider countries that have more than 10 respondents in this survey
 survey_data <- survey_data %>% 
   filter(tech_company == "Yes") %>% 
-  select(selected_feat) %>% 
-  group_by(Country) %>% 
-  mutate(n = n()) %>% 
-  filter(n >= 10) %>% 
-  select(-n) %>% 
-  ungroup()
+  select(selected_feat) 
+#  group_by(Country) %>% 
+#  mutate(n = n()) %>% 
+#  filter(n >= 10) %>% 
+#  select(-n) %>% 
+#  ungroup()
 
 # encoding gender
 male_sub <- c("cis male", "Cis Male", "Cis Man", "m", "M", "Mail", "maile", "Make", "Mal", "male", "Male", "Male ", "Male (CIS)", "Malr", "Man", "msle")
