@@ -25,12 +25,6 @@ ui <- fluidPage(
                     choices = c("All", "Male", "Female"), 
                     selected = "All"), 
        sliderInput("ageInput", h4("Age"), 18, 80, c(25, 40))
-       
-     # selectInput("ageInput", h3("Select an age group"),
-     #             choices = c("All" = 1,
-     #                            "<= 35" = 2,
-     #                            ">35" = 3),
-     #             selected = 1)
      ),
      mainPanel(
        plotlyOutput('myplot')
@@ -68,17 +62,6 @@ server <- function(input, output) {
     }
     
     # filter data based on 'ageInput', which represents selected age range
-    # if(input$ageInput == '1') {
-    #   filteredData <- filteredData
-    # } else {
-    #   if(input$ageInput == '2') {
-    #     filteredData <- filteredData %>%
-    #       filter(Age <= 35)
-    #   } else {
-    #         filteredData <- filteredData %>%
-    #           filter(Age > 35)
-    #     }
-    # }
     filteredData <- filteredData %>%
       filter(Age >= input$ageInput[1] & Age <= input$ageInput[2])
   })
@@ -104,14 +87,6 @@ server <- function(input, output) {
     p <- dataFilter() %>% 
       ggplot(aes(x = !!sym(input$questionInput), fill = !!sym(input$questionInput))) + 
       geom_bar(colour="black", width = 0.5) +
-      # theme(panel.grid.minor = element_blank(),
-      #       plot.title = element_text(size = 19, hjust = 0.5,  family="American Typewriter", lineheight=1.2),
-      #       plot.margin = margin(40, 2, 2, 2),
-      #       axis.text.x = element_text(size = 12, face = "bold"),
-      #       axis.text.y = element_text(size = 10),
-      #       legend.title = element_blank(),
-      #       legend.position = "top")
-      
       theme(panel.grid.minor = element_blank(),
             panel.background = element_blank(), # remove plot background
             plot.title = element_text(size = 15, hjust = 10, vjust = 10, lineheight = 1),
