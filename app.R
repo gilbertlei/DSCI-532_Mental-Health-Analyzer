@@ -2,29 +2,32 @@ library(shiny)
 library(tidyverse)
 library(ggplot2)
 library(plotly)
+# install.packages("shinythemes")
+library(shinythemes)
 
 data <- read.csv("data/cleaned_survey_data.csv", header=TRUE, stringsAsFactors = FALSE)
 
-ui <- fluidPage(
-  titlePanel("Mental Health in Tech Analyzer",
+
+ui <- fluidPage(theme = shinytheme("flatly"),
+  titlePanel(h2("Mental Health in Tech Analyzer"),
              windowTitle = "Mental Health in Tech Analyzer"),
   sidebarLayout(
-     sidebarPanel(width = 4,
-       selectInput("questionInput", h4("Question"), 
-                   choices = c("Do you think that discussing a mental health issue with your employer would have negative consequences?"="mental_health_consequence",
-                               "Would you be willing to discuss a mental health issue with your coworkers?"="coworkers",
-                               "Would you be willing to discuss a mental health issue with your direct supervisor(s)?"="supervisor",
-                               "Would you bring up a mental health issue with a potential employer in an interview?"="mental_health_interview",
-                               "Do you know the options for mental health care your employer provides?"="care_options",
-                               "Has your employer ever discussed mental health as part of an employee wellness program?"="wellness_program"), 
-                   selected = "mental_health_consequence"),
-       radioButtons("countryInput", h4("Country"), 
+     sidebarPanel(
+       h4(selectInput("questionInput", h3("Question"), 
+                   choices = c("1. Do you think that discussing a mental health issue with your employer would have negative consequences?"="mental_health_consequence",
+                               "2. Would you be willing to discuss a mental health issue with your coworkers?"="coworkers",
+                               "3. Would you be willing to discuss a mental health issue with your direct supervisor(s)?"="supervisor",
+                               "4. Would you bring up a mental health issue with a potential employer in an interview?"="mental_health_interview",
+                               "5. Do you know the options for mental health care your employer provides?"="care_options",
+                               "6. Has your employer ever discussed mental health as part of an employee wellness program?"="wellness_program"), 
+                   selected = "mental_health_consequence")),
+       h4(radioButtons("countryInput", h3("Country"), 
                    choices = c("All", "United States", "Others"), 
-                   selected = "All"),
-       radioButtons("genderInput", h4("Gender"),
+                   selected = "All")),
+       h4(radioButtons("genderInput", h3("Gender"),
                     choices = c("All", "Male", "Female"), 
-                    selected = "All"), 
-       sliderInput("ageInput", h4("Age"), 18, 80, c(25, 40))
+                    selected = "All")), 
+       sliderInput("ageInput", h3("Age"), 18, 80, c(25, 40), width='200%')
      ),
      mainPanel(
        plotlyOutput('myplot')
@@ -98,8 +101,7 @@ server <- function(input, output) {
             axis.line = element_line(size = 1, color = "black"),
             legend.position = "none") +
       labs(title=myTitle)
-    
-    ggplotly(p) %>% layout(height = 700, width = 700)
+    ggplotly(p, tooltip="y") %>% layout(height = 700, width = 700, hoverlabel = list(font=list(size=20)))
   })
 }
 
