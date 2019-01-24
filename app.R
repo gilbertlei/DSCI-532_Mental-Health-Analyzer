@@ -101,7 +101,7 @@ server <- function(input, output) {
             axis.line = element_line(size = 1, color = "black"),
             legend.position = "none") +
       labs(title=myTitle)
-    ggplotly(p, tooltip="y") %>% layout(height = 700, width = 700, hoverlabel = list(font=list(size=20)))
+    ggplotly(p, tooltip="y") %>% layout(height = 700, hoverlabel = list(font=list(size=20)))
   })
 }
 
