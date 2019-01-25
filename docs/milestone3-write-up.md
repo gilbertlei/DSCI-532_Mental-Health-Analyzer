@@ -1,4 +1,4 @@
-# Mental Health Analyzer
+# Milestone 3 Writeup
 -------------------------------------------------
 ## Team
 | Name  | Slack Handle | Github.com |
@@ -6,18 +6,6 @@
 | Jingyun Chen | `@Jingyun` | [jchen9314](https://github.com/jchen9314) |
 | Gilbert Lei | `@Gilbert Lei` | [gilbertlei](https://github.com/gilbertlei) |
 
-## Milestone Progresses
-| Milestone | Deliverables  |
-| ---- | ------------------------------- |
-| Milestone 1 | [Proposal](docs/milestone1-proposal.md) |
-| Milestone 2 | [Milestone 2 Writeup](docs/milestone2-writeup.md)  |
-|  | [Deployed Shiny App](https://gilbertlei.shinyapps.io/dsci_532_mental_health_analyzer/) |
-|  | [Shiny App Source Code](https://github.com/UBC-MDS/DSCI_532_Mental_Health_Analyzer/blob/master/app.R)      |  
-| Milestone 3 | [Milestone 3 writeup](docs/milestone3-writeup.md) |
-|  | [feedback to "DSCI532_violent_crime_app"](https://github.com/UBC-MDS/DSCI532_violent_crime_app/issues/25) |
-|  | [feedback to "DSCI_532_Crime_Blei7_simchi"](https://github.com/UBC-MDS/DSCI_532_Crime_Blei7_simchi/issues/11) |
-
-## Milestone 3 Writeup
 ### Reflection on the usefulness of the feedback you received.
 We received many feedbacks from reviewers (Joel Ostblom (TA), Simon Chiu, Bailey Lei, Alden Chen and Margaret Wu) this week. These feedbacks, all are valuable, can be grouped into three areas.
 
