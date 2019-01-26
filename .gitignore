@@ -1,1 +1,4 @@
-.ipynb_checkpoints/
+rsconnect/
+*.ipynb_checkpoints/
+*.RData
+*.Rhistory
