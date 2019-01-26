@@ -9,51 +9,51 @@ data <- read.csv("data/cleaned_survey_data.csv", header=TRUE, stringsAsFactors =
 
 
 ui <- fluidPage(theme = shinytheme("flatly"),
-  titlePanel(h2("Mental Health in Tech Analyzer"),
-             windowTitle = "Mental Health in Tech Analyzer"),
-  sidebarLayout(
-     sidebarPanel(
-       h4(selectInput("questionInput", h3("Question"), 
-                   choices = c("1. Do you think that discussing a mental health issue with your employer would have negative consequences?"="mental_health_consequence",
-                               "2. Would you be willing to discuss a mental health issue with your coworkers?"="coworkers",
-                               "3. Would you be willing to discuss a mental health issue with your direct supervisor(s)?"="supervisor",
-                               "4. Would you bring up a mental health issue with a potential employer in an interview?"="mental_health_interview",
-                               "5. Do you know the options for mental health care your employer provides?"="care_options",
-                               "6. Has your employer ever discussed mental health as part of an employee wellness program?"="wellness_program"), 
-                   selected = "mental_health_consequence")),
-       h4(radioButtons("countryInput", h3("Country"), 
-                   choices = c("All", "United States", "Others"), 
-                   selected = "All")),
-       h4(radioButtons("genderInput", h3("Gender"),
-                    choices = c("All", "Male", "Female"), 
-                    selected = "All")), 
-       sliderInput("ageInput", h3("Age"), 18, 80, c(25, 40), width='200%')
-     ),
-     mainPanel(
-       plotlyOutput('myplot')
-     )
-   )
-  )
+                titlePanel(h2("Mental Health in Tech Analyzer"),
+                           windowTitle = "Mental Health in Tech Analyzer"),
+                sidebarLayout(
+                  sidebarPanel(
+                    h4(selectInput("questionInput", h3("Question"), 
+                                   choices = c("1. Do you think that discussing a mental health issue with your employer would have negative consequences?"="mental_health_consequence",
+                                               "2. Would you be willing to discuss a mental health issue with your coworkers?"="coworkers",
+                                               "3. Would you be willing to discuss a mental health issue with your direct supervisor(s)?"="supervisor",
+                                               "4. Would you bring up a mental health issue with a potential employer in an interview?"="mental_health_interview",
+                                               "5. Do you know the options for mental health care your employer provides?"="care_options",
+                                               "6. Has your employer ever discussed mental health as part of an employee wellness program?"="wellness_program"), 
+                                   selected = "mental_health_consequence")),
+                    h4(radioButtons("countryInput", h3("Country"), 
+                                    choices = c("All", "United States", "Others"), 
+                                    selected = "All")),
+                    h4(radioButtons("genderInput", h3("Gender"),
+                                    choices = c("All", "Male", "Female"), 
+                                    selected = "All")), 
+                    sliderInput("ageInput", h3("Age"), 18, 62, c(25, 40))
+                  ),
+                  mainPanel(
+                    plotlyOutput('myplot')
+                  )
+                )
+)
 
 server <- function(input, output) {
   
   dataFilter <- reactive({
-
+    
     # select what is going to be analyzed based on 'questionInput' 
     filteredData <- data %>%
-        select(Country, Gender, Age, input$questionInput)
+      select(Country, Gender, Age, input$questionInput)
     
     # filter data based on 'countryInput', which represents selected country 
     if(input$countryInput == 'All') {
       filteredData <- filteredData
     } else {
-       if (input$countryInput == "United States"){
-         filteredData <- filteredData %>%
-           filter(Country == input$countryInput)
-       } else {
-          filteredData <- filteredData %>%
-            filter(Country != "United States" )
-       } 
+      if (input$countryInput == "United States"){
+        filteredData <- filteredData %>%
+          filter(Country == input$countryInput)
+      } else {
+        filteredData <- filteredData %>%
+          filter(Country != "United States" )
+      } 
     }
     
     # filter data based on 'genderInput', which represents selected gender
@@ -68,7 +68,7 @@ server <- function(input, output) {
     filteredData <- filteredData %>%
       filter(Age >= input$ageInput[1] & Age <= input$ageInput[2])
   })
-
+  
   # plot the bar chart based on filtered data
   output$myplot <- renderPlotly({
     
