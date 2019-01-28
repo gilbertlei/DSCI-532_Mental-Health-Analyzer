@@ -8,7 +8,8 @@ library(shinythemes)
 data <- read.csv("data/cleaned_survey_data.csv", header=TRUE, stringsAsFactors = FALSE)
 
 
-ui <- fluidPage(theme = shinytheme("flatly"),
+ui <- fluidPage(#tags$style(type = "text/css", ".irs-grid-text {font-family: 'arial'; color: white; bottom: 17px; z-index: 1;}"),
+                theme = shinytheme("flatly"),
                 titlePanel(h2("Mental Health in Tech Analyzer"),
                            windowTitle = "Mental Health in Tech Analyzer"),
                 sidebarLayout(
