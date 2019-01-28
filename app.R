@@ -21,11 +21,8 @@ ui <- fluidPage(theme = shinytheme("flatly"),
                                                "5. Do you know the options for mental health care your employer provides?"="care_options",
                                                "6. Has your employer ever discussed mental health as part of an employee wellness program?"="wellness_program"), 
                                    selected = "mental_health_consequence")),
-                    h4(selectInput("countryInput", h3("Country"), 
-                                    choices = c("All", "United States", "United Kingdom",
-                                                "Canada", "Germany", "Ireland",
-                                                "Netherlands", "Australia", "France",
-                                                "Others"), 
+                    h4(radioButtons("countryInput", h3("Country"), 
+                                    choices = c("All", "United States", "Others"), 
                                     selected = "All")),
                     h4(radioButtons("genderInput", h3("Gender"),
                                     choices = c("All", "Male", "Female"), 
@@ -50,14 +47,12 @@ server <- function(input, output) {
     if(input$countryInput == 'All') {
       filteredData <- filteredData
     } else {
-      if (input$countryInput == "Others"){
-        filteredData <- filteredData %>%
-          filter(!(Country %in% c("United States", "United Kingdom",
-                                  "Canada", "Germany", "Ireland",
-                                  "Netherlands", "Australia", "France")))
-      } else {
+      if (input$countryInput == "United States"){
         filteredData <- filteredData %>%
           filter(Country == input$countryInput)
+      } else {
+        filteredData <- filteredData %>%
+          filter(Country != "United States" )
       } 
     }
     
@@ -95,9 +90,11 @@ server <- function(input, output) {
     p <- dataFilter() %>% 
       ggplot(aes(x = !!sym(input$questionInput), fill = !!sym(input$questionInput))) + 
       geom_bar(colour="black", width = 0.5) +
+      scale_y_continuous(expand = c(0, 0)) +
       theme(panel.grid.minor = element_blank(),
             panel.background = element_blank(), # remove plot background
-            plot.title = element_text(size = 15, hjust = 10, vjust = 10, lineheight = 1),
+            plot.title = element_text(size = 18, hjust = 10, vjust = 10, lineheight = 1.2),
+            plot.margin = margin(100, 2, 2, 2),
             axis.text.x = element_text(size = 15, face = "bold", color = "black"),
             axis.text.y = element_text(size = 15, face = "bold", color = "black"),
             axis.title.x=element_blank(),
@@ -106,7 +103,7 @@ server <- function(input, output) {
             axis.line = element_line(size = 1, color = "black"),
             legend.position = "none") +
       labs(title=myTitle)
-    ggplotly(p, tooltip="y") %>% layout(height = 700, hoverlabel = list(font=list(size=20)))
+    ggplotly(p, tooltip="y", height = 700) %>% layout(hoverlabel = list(font=list(size=20)))
   })
 }
 
