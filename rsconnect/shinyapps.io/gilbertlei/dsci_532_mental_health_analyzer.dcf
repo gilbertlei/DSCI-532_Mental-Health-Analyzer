@@ -5,6 +5,8 @@ account: gilbertlei
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 655704
-bundleId: 1824187
+bundleId: 1838747
 url: https://gilbertlei.shinyapps.io/dsci_532_mental_health_analyzer/
-when: 1547917135.07331
+when: 1548529700.07934
+asMultiple: FALSE
+asStatic: FALSE
