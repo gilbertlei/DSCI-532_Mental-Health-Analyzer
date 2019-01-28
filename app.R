@@ -22,8 +22,11 @@ ui <- fluidPage(#tags$style(type = "text/css", ".irs-grid-text {font-family: 'ar
                                                "5. Do you know the options for mental health care your employer provides?"="care_options",
                                                "6. Has your employer ever discussed mental health as part of an employee wellness program?"="wellness_program"), 
                                    selected = "mental_health_consequence")),
-                    h4(radioButtons("countryInput", h3("Country"), 
-                                    choices = c("All", "United States", "Others"), 
+                    h4(selectInput("countryInput", h3("Country"), 
+                                   choices = c("All", "United States", "United Kingdom",
+                                               "Canada", "Germany", "Ireland",
+                                               "Netherlands", "Australia", "France",
+                                               "Others"),
                                     selected = "All")),
                     h4(radioButtons("genderInput", h3("Gender"),
                                     choices = c("All", "Male", "Female"), 
@@ -48,12 +51,14 @@ server <- function(input, output) {
     if(input$countryInput == 'All') {
       filteredData <- filteredData
     } else {
-      if (input$countryInput == "United States"){
+      if (input$countryInput == "Others"){
         filteredData <- filteredData %>%
-          filter(Country == input$countryInput)
+          filter(!(Country %in% c("United States", "United Kingdom",
+                                  "Canada", "Germany", "Ireland",
+                                  "Netherlands", "Australia", "France")))
       } else {
         filteredData <- filteredData %>%
-          filter(Country != "United States" )
+          filter(Country == input$countryInput)
       } 
     }
     
