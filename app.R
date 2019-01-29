@@ -102,8 +102,8 @@ server <- function(input, output) {
             plot.margin = margin(100, 2, 2, 2),
             axis.text.x = element_text(size = 15, face = "bold", color = "black"),
             axis.text.y = element_text(size = 15, face = "bold", color = "black"),
-            axis.title.x=element_blank(),
-            axis.title.y=element_blank(),
+            axis.title.x = element_blank(),
+            axis.title.y = element_text(size = 15, color = "black"),
             legend.title = element_blank(),
             axis.line = element_line(size = 1, color = "black"),
             legend.position = "none") +
