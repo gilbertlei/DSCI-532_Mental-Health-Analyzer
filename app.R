@@ -31,7 +31,7 @@ ui <- fluidPage(#tags$style(type = "text/css", ".irs-grid-text {font-family: 'ar
                     h4(radioButtons("genderInput", h3("Gender"),
                                     choices = c("All", "Male", "Female"), 
                                     selected = "All")), 
-                    sliderInput("ageInput", h3("Age"), 18, 62, c(25, 40))
+                    sliderInput("ageInput", h3("Age"), 18, 62, c(18, 62))
                   ),
                   mainPanel(
                     plotlyOutput("barPlot"), plotlyOutput("ageHist")
@@ -129,7 +129,7 @@ server <- function(input, output) {
             legend.title = element_blank(),
             axis.line = element_line(size = 1, color = "black"),
             legend.position = "none") +
-      labs(x = "Age", y = "Count", title = "Age distribution")
+      labs(x = "Age", y = "Count", title = "Age distribution of respondents")
     ggplotly(ageDist, tooltip = "skip") %>% layout(hoverlabel = list(font=list(size=20)))
   })
 }
