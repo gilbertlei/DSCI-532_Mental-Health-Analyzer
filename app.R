@@ -26,17 +26,17 @@ ui <- fluidPage(theme = shinytheme("flatly"),
                                                "Canada", "Germany", "Ireland",
                                                "Netherlands", "Australia", "France",
                                                "Others"),
-                                    selected = "All")),
+                                   selected = "All")),
                     h4(radioButtons("genderInput", h3("Gender"),
                                     choices = c("All", "Male", "Female"), 
                                     selected = "All")), 
                     sliderInput("ageInput", h3("Age"), 18, 62, c(25, 40))
                   ),
                   mainPanel(
-                    plotlyOutput('myplot')
+                    plotlyOutput("barPlot"), plotlyOutput("ageHist")
                   )
-                )
-)
+                ))
+
 
 server <- function(input, output) {
   
@@ -75,7 +75,7 @@ server <- function(input, output) {
   })
   
   # plot the bar chart based on filtered data
-  output$myplot <- renderPlotly({
+  output$barPlot <- renderPlotly({
     
     # initiate plot title text 
     if(input$questionInput == 'mental_health_consequence') {
@@ -92,23 +92,44 @@ server <- function(input, output) {
       myTitle <- 'Has your employer ever discussed mental \n health as part of an employee wellness program?'
     }
     
-    p <- dataFilter() %>% 
+    barChart <- dataFilter() %>% 
       ggplot(aes(x = !!sym(input$questionInput), fill = !!sym(input$questionInput))) + 
       geom_bar(colour="black", width = 0.5) +
       scale_y_continuous(expand = c(0, 0)) +
       theme(panel.grid.minor = element_blank(),
             panel.background = element_blank(), # remove plot background
             plot.title = element_text(size = 18, hjust = 10, vjust = 10, lineheight = 1.2),
-            plot.margin = margin(100, 2, 2, 2),
+            plot.margin = margin(100, 50, 2, 2),
             axis.text.x = element_text(size = 15, face = "bold", color = "black"),
             axis.text.y = element_text(size = 15, face = "bold", color = "black"),
-            axis.title.x=element_blank(),
-            axis.title.y=element_blank(),
+            axis.title.x = element_blank(),
+            axis.title.y = element_text(size = 15, color = "black"),
             legend.title = element_blank(),
             axis.line = element_line(size = 1, color = "black"),
             legend.position = "none") +
-      labs(title=myTitle)
-    ggplotly(p, tooltip="y", height = 700) %>% layout(hoverlabel = list(font=list(size=20)))
+      labs(title=myTitle, y = "Count")
+    ggplotly(barChart, tooltip="y") %>% layout(hoverlabel = list(font=list(size=20)))
+  })
+  
+  # plot age distribution
+  output$ageHist <- renderPlotly ({
+    ageDist <- dataFilter() %>% 
+      ggplot(aes(x=Age))+
+      geom_histogram(bins = 30) + 
+      scale_y_continuous(expand = c(0, 0)) +
+      theme(panel.grid.minor = element_blank(),
+            panel.background = element_blank(), # remove plot background
+            plot.title = element_text(size = 18, hjust = 10, vjust = 10, lineheight = 1.2),
+            plot.margin = margin(100, 50, 2, 2),
+            axis.text.x = element_text(size = 15, face = "bold", color = "black"),
+            axis.text.y = element_text(size = 15, face = "bold", color = "black"),
+            axis.title.x = element_text(size = 15, color = "black"),
+            axis.title.y = element_text(size = 15, color = "black"),
+            legend.title = element_blank(),
+            axis.line = element_line(size = 1, color = "black"),
+            legend.position = "none") +
+      labs(x = "Age", y = "Count", title = "Age distribution")
+    ggplotly(ageDist, tooltip = "skip") %>% layout(hoverlabel = list(font=list(size=20)))
   })
 }
 
